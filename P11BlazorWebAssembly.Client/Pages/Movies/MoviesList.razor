@@ -1,0 +1,119 @@
+﻿@page "/Movies/MoviesList"
+
+@inject IMovieService MovieService
+@inject NavigationManager NavigationManager
+
+<h3>Full list of Movies</h3>
+
+
+<p>
+    <a href="Movies/createMovie">Create new Movie</a>
+</p>
+
+@if (Movies == null)
+{
+    <p><em>@message</em></p>
+}
+
+else
+{
+    <div>
+        <InputText @bind-Value=searchTerm></InputText>
+        <button class="btn btn-primary" @onclick=Search>Search</button>
+    </div>
+    
+
+    <CardComponent Cards="@MoviesCards" />
+    <div class="page-buttons">
+        <button class="btn btn-primary" disabled="@(currentPage==1)" @onclick="PreviousPage">Previous</button>
+        <span class="page-num">@currentPage</span>
+        <button class="btn btn-primary" disabled="@(currentPage==totalPages)" @onclick="NextPage">Next</button>
+    </div>
+}
+
+
+
+@code {
+    private List<Card> MoviesCards
+    {
+        get
+        {
+            return Movies.Select(m => new Card
+            {
+                Id=m.Id,
+                Title = m.Title,
+                Director = m.Director,
+                ImageUrl = "/placeholder.png"
+            }).ToList();
+        }
+    }
+    private List<Movie> Movies;
+    private string message = "Loading Movies...";
+
+    private int currentPage = 1;
+    private const int pageSize = 9;
+    private int totalPages = 0;
+
+
+    private string searchTerm = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await  LoadMovies();
+    }
+
+    private async Task LoadMovies()
+    {
+        var response = await MovieService.SearchMoviesAsync(searchTerm, currentPage, pageSize);
+        if (response.Success)
+        {
+
+            Movies = response.Data.Data.ToList();
+            totalPages = response.Data.TotalPages;         
+        }
+        else
+        {
+            message = response.Message;
+        }
+    }
+
+
+    void GoToEdit(int id)
+    {
+        NavigationManager.NavigateTo($"/Movies/editMovie/{id}");
+    }
+
+    private async Task PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+            await LoadMovies();
+        }
+    }
+    private async Task NextPage()
+    {
+        if(currentPage<totalPages){
+            currentPage++;
+            await LoadMovies();
+        }
+    }
+
+    private async Task Search()
+    {
+        currentPage = 1;
+        await LoadMovies();
+    }
+}
+
+<style>
+    .page-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 10px;
+    }
+    .page-num {
+        margin: 0 10px;
+    }
+</style>

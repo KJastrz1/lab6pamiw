@@ -1,0 +1,78 @@
+@inherits ComponentBase
+
+@inject NavigationManager NavigationManager
+
+<div class="card-container">
+    @foreach (var card in Cards)
+    {
+
+        <div class="card">
+            <img src="@card.ImageUrl" alt="Card Image" />
+            <div class="card-bottom">
+                <div class="card-text">
+                    <p>@card.Title</p>
+                </div>
+                <div class="director-text">
+                    <p>dir. @card.Director</p>
+                </div>
+                <button class="btn btn-primary btn-card" @onclick="()=> GoToEdit(card.Id)">Edit</button>
+            </div>
+        </div>
+
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<Card> Cards { get; set; }
+    void GoToEdit(int id)
+    {
+        NavigationManager.NavigateTo($"/Movies/editMovie/{id}");
+    }
+
+}
+
+<style>
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    .card {
+        width: 400px;
+        margin: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 1);
+        color: white;
+
+    }
+
+    .card-bottom {
+        background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+        
+    }
+
+    img {
+        width: 100%;
+        height: auto;
+    }
+
+    .card-text {
+        padding: 10px;
+        font: sans-serif;
+   
+
+
+    }
+
+    .director-text {
+        font-size: 0.8rem;
+        padding: 10px;
+        align-self: left;
+    }
+.btn-card {
+    margin-left: auto;
+    margin: 10px;
+}
+</style>
