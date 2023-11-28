@@ -21,6 +21,7 @@ namespace P06Shop.Shared.Services.MovieService
 
         private readonly HttpClient _httpClient;
         private readonly AppSettings _appSettings;
+      
         public MovieService(HttpClient httpClient, IOptions<AppSettings> appSettings)
         {
             _httpClient = httpClient;
@@ -29,7 +30,7 @@ namespace P06Shop.Shared.Services.MovieService
 
         public async Task<ServiceResponse<Movie>> CreateMovieAsync(Movie Movie)
         {
-            var response = await _httpClient.PostAsJsonAsync(_appSettings.BaseMovieEndpoint.GetAllMoviesEndpoint, Movie);
+            var response = await _httpClient.PostAsJsonAsync(_appSettings.BaseMovieEndpoint.Base_url+_appSettings.BaseMovieEndpoint.GetAllMoviesEndpoint, Movie);
             var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Movie>>();
             return result;
         }
@@ -37,7 +38,7 @@ namespace P06Shop.Shared.Services.MovieService
         public async Task<ServiceResponse<bool>> DeleteMovieAsync(int id)
         {
        
-            var response = await _httpClient.DeleteAsync($"{id}");
+            var response = await _httpClient.DeleteAsync(_appSettings.BaseMovieEndpoint.Base_url+$"{id}");
             var result = await response.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
             return result;
         }  
@@ -49,7 +50,8 @@ namespace P06Shop.Shared.Services.MovieService
         {
             try
             {
-                var response = await _httpClient.GetAsync(_appSettings.BaseMovieEndpoint.GetAllMoviesEndpoint);
+               
+                var response = await _httpClient.GetAsync(_appSettings.BaseMovieEndpoint.Base_url+_appSettings.BaseMovieEndpoint.GetAllMoviesEndpoint);
                 if (!response.IsSuccessStatusCode)
                     return new ServiceResponse<List<Movie>>
                     {
@@ -87,7 +89,7 @@ namespace P06Shop.Shared.Services.MovieService
 
         public async Task<ServiceResponse<Movie>> GetMovieByIdAsync(int id)
         {
-            var response = await _httpClient.GetAsync(id.ToString());
+            var response = await _httpClient.GetAsync(_appSettings.BaseMovieEndpoint.Base_url+id.ToString());
             if (!response.IsSuccessStatusCode)
                 return new ServiceResponse<Movie>
                 {
@@ -108,7 +110,7 @@ namespace P06Shop.Shared.Services.MovieService
  
         public async Task<ServiceResponse<Movie>> UpdateMovieAsync(Movie Movie)
         {
-            var response = await _httpClient.PutAsJsonAsync(_appSettings.BaseMovieEndpoint.GetAllMoviesEndpoint, Movie);
+            var response = await _httpClient.PutAsJsonAsync(_appSettings.BaseMovieEndpoint.Base_url+_appSettings.BaseMovieEndpoint.GetAllMoviesEndpoint, Movie);
             var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Movie>>();
             return result;
         }
@@ -119,7 +121,7 @@ namespace P06Shop.Shared.Services.MovieService
             try
             {
                 string searchUrl = string.IsNullOrWhiteSpace(text) ? "" : $"/{text}";
-                var response = await _httpClient.GetAsync(_appSettings.BaseMovieEndpoint.SearchMoviesEndpoint + searchUrl + $"/{page}/{pageSize}");
+                var response = await _httpClient.GetAsync(_appSettings.BaseMovieEndpoint.Base_url + _appSettings.BaseMovieEndpoint.SearchMoviesEndpoint + searchUrl + $"/{page}/{pageSize}");
                 if (!response.IsSuccessStatusCode)
                     return new ServiceResponse<PaginatedResult<Movie>>
                     {

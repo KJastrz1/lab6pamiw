@@ -1,13 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using P04WeatherForecastAPI.Client.MessageBox;
-
 using P04WeatherForecastAPI.Client.Services.SpeechService;
-using P04WeatherForecastAPI.Client.Services.WeatherServices;
 using P04WeatherForecastAPI.Client.ViewModels;
 using P06Shop.Shared.Configuration;
 using P06Shop.Shared.MessageBox;
-using P06Shop.Shared.Services.ProductService;
+using P06Shop.Shared.Services.MovieService;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -31,10 +29,11 @@ namespace P04WeatherForecastAPI.Client
             string s = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             //wczytanie appsettings.json do konfiguracji 
             var builder = new ConfigurationBuilder()
-              .AddUserSecrets<App>()
-              .SetBasePath(Directory.GetCurrentDirectory())
-              .AddJsonFile("appsettings.json")
-              .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true);
+            .AddUserSecrets<App>()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable
+            ("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true);
             _configuration = builder.Build();
             // pamietac o lunch profiles w visual studio! 
 
@@ -60,17 +59,17 @@ namespace P04WeatherForecastAPI.Client
             //Microsoft.Extensions.Options.ConfigurationExtensions
             var appSettings = _configuration.GetSection(nameof(AppSettings));
             var appSettingsSection = appSettings.Get<AppSettings>();
-            services.Configure<AppSettings>(appSettings);
+
+            // services.Configure<AppSettings>(appSettings);
+            services.AddSingleton(appSettingsSection);
             return appSettingsSection;
         }
 
         private void ConfigureAppServices(IServiceCollection services, AppSettings appSettings)
         {
-            
-            // konfiguracja serwisów 
-            services.AddSingleton<IAccuWeatherService, AccuWeatherService>();
-            services.AddSingleton<IFavoriteCityService, FavoriteCityService>();
-            services.AddSingleton<IProductService, ProductService>();
+
+            // konfiguracja serwisów           
+            services.AddSingleton<IMovieService, MovieService>();
             services.AddSingleton<IMessageDialogService, WpfMesageDialogService>();
             services.AddSingleton<ISpeechService>(_ => new SpeechService(appSettings.SpeechSettings));
         }
@@ -80,28 +79,28 @@ namespace P04WeatherForecastAPI.Client
 
             // konfiguracja viewModeli 
             services.AddSingleton<MainViewModelV4>();
-            services.AddSingleton<FavoriteCityViewModel>();
-            services.AddSingleton<ProductsViewModel>();
-            // services.AddSingleton<BaseViewModel,MainViewModelV3>();
+            services.AddSingleton<MoviesViewModel>();
+
         }
 
         private void ConfigureViews(IServiceCollection services)
         {
             // konfiguracja okienek 
             services.AddTransient<MainWindow>();
-            services.AddTransient<FavoriteCitiesView>();
-            services.AddTransient<ShopProductsView>();
-            services.AddTransient<ProductDetailsView>();
+            services.AddTransient<MovieDetailsView>();
+            services.AddTransient<MoviesView>();
         }
 
         private void ConfigureHttpClients(IServiceCollection services, AppSettings appSettingsSection)
         {
             var uriBuilder = new UriBuilder(appSettingsSection.BaseAPIUrl)
             {
-                Path = appSettingsSection.BaseProductEndpoint.Base_url,
+
             };
+            Console.Error.WriteLine($"Base API URL: {uriBuilder.Uri}");
             //Microsoft.Extensions.Http
-            services.AddHttpClient<IProductService, ProductService>(client => client.BaseAddress = uriBuilder.Uri);
+
+            services.AddHttpClient<IMovieService, MovieService>(client => client.BaseAddress = uriBuilder.Uri);
         }
 
         private void OnStartup(object sender, StartupEventArgs e)

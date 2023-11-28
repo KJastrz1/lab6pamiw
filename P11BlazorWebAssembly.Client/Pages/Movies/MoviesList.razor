@@ -1,6 +1,6 @@
 ﻿@page "/Movies/MoviesList"
 
-@inject IMovieService MovieService
+@inject IMovieService movieService
 @inject NavigationManager NavigationManager
 
 <h3>Full list of Movies</h3>
@@ -64,7 +64,7 @@ else
 
     private async Task LoadMovies()
     {
-        var response = await MovieService.SearchMoviesAsync(searchTerm, currentPage, pageSize);
+        var response = await movieService.SearchMoviesAsync(searchTerm, currentPage, pageSize);
         if (response.Success)
         {
 

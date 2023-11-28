@@ -17,7 +17,7 @@ var appSettingsSection = appSettings.Get<AppSettings>();
 
 var uriBuilderMovies = new UriBuilder(appSettingsSection.BaseAPIUrl)
 {
-    Path = appSettingsSection.BaseMovieEndpoint.Base_url,
+    // Path = appSettingsSection.BaseMovieEndpoint.Base_url,
 };
 //Microsoft.Extensions.Http
 builder.Services.AddHttpClient<IMovieService, MovieService>(client => client.BaseAddress = uriBuilderMovies.Uri);

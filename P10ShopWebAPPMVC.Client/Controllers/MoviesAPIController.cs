@@ -5,102 +5,106 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using P06Shop.Shared.Services.ProductService;
-using P06Shop.Shared.Shop;
+using P06Shop.Shared.Services.MovieService;
+using P06Shop.Shared.MovieModel;
 
 
 namespace P09ShopWebAPPMVC.Client.Controllers
 {
-    public class ProductsAPIController : Controller
+    public class MoviesAPIController : Controller
     {
-      
-        private readonly IProductService _productService;
 
-        public ProductsAPIController(IProductService productService)
+        private readonly IMovieService _MovieService;
+
+
+        private readonly ILogger<MoviesAPIController> _logger;
+
+        public MoviesAPIController(IMovieService MovieService, ILogger<MoviesAPIController> logger)
         {
-            _productService = productService;
-          
+            _MovieService = MovieService;
+            _logger = logger;
         }
 
-        // GET: Products
+        // GET: Movies
         public async Task<IActionResult> Index()
         {
-            var products = await _productService.GetProductsAsync();
-            return products != null ?
-                          View(products.Data.AsEnumerable()) :
-                          Problem("Entity set 'ShopContext.Products'  is null.");
+            var Movies = await _MovieService.GetMoviesAsync();
 
-            //return products != null ? 
-            //              View("~/Views/Products/Index.cshtml", products.Data.AsEnumerable()) :
-            //              Problem("Entity set 'ShopContext.Products'  is null.");
+            return Movies != null ?
+                          View(Movies.Data.AsEnumerable()) :
+                          Problem("Entity set 'ShopContext.Movies'  is null.");
+
+            //return Movies != null ? 
+            //              View("~/Views/Movies/Index.cshtml", Movies.Data.AsEnumerable()) :
+            //              Problem("Entity set 'ShopContext.Movies'  is null.");
         }
 
-        // GET: Products/Details/5
+        // GET: Movies/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-         
+
             if (id == null)
             {
                 return NotFound();
             }
-            var product = await _productService.GetProductByIdAsync((int)id);
-            
-            if (product.Data == null)
+            var Movie = await _MovieService.GetMovieByIdAsync((int)id);
+
+            if (Movie.Data == null)
             {
                 return NotFound();
             }
 
-            return View(product.Data);
+            return View(Movie.Data);
         }
 
-        // GET: Products/Create
+        // GET: Movies/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Products/Create
+        // POST: Movies/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Barcode,Price,ReleaseDate")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,Barcode,Price,ReleaseDate")] Movie Movie)
         {
-             
+
             if (ModelState.IsValid)
             {
-                await _productService.CreateProductAsync(product);
+                await _MovieService.CreateMovieAsync(Movie);
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+            return View(Movie);
         }
 
-        // GET: Products/Edit/5
+        // GET: Movies/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var product =await _productService.GetProductByIdAsync((int)id);
-            if (product.Data == null)
+            var Movie = await _MovieService.GetMovieByIdAsync((int)id);
+            if (Movie.Data == null)
             {
                 return NotFound();
             }
-            return View(product.Data);
+            return View(Movie.Data);
         }
 
-        // POST: Products/Edit/5
+        // POST: Movies/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Barcode,Price,ReleaseDate")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Barcode,Price,ReleaseDate")] Movie Movie)
         {
 
-            if (id != product.Id)
+            if (id != Movie.Id)
             {
                 return NotFound();
             }
@@ -109,18 +113,18 @@ namespace P09ShopWebAPPMVC.Client.Controllers
             {
                 try
                 {
-                    var productResult = await _productService.UpdateProductAsync(product);
+                    var MovieResult = await _MovieService.UpdateMovieAsync(Movie);
                 }
                 catch (Exception)
                 {
-                     return NotFound();
+                    return NotFound();
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+            return View(Movie);
         }
 
-        // GET: Products/Delete/5
+        // GET: Movies/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
 
@@ -129,27 +133,27 @@ namespace P09ShopWebAPPMVC.Client.Controllers
                 return NotFound();
             }
 
-            var product = await _productService.GetProductByIdAsync((int)id);
-            if (product == null)
+            var Movie = await _MovieService.GetMovieByIdAsync((int)id);
+            if (Movie == null)
             {
                 return NotFound();
             }
 
-            return View(product.Data);
+            return View(Movie.Data);
         }
 
-        // POST: Products/Delete/5
+        // POST: Movies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await _productService.DeleteProductAsync((int)id);
-            if (product.Success)
+            var Movie = await _MovieService.DeleteMovieAsync((int)id);
+            if (Movie.Success)
                 return RedirectToAction(nameof(Index));
             else
                 return NotFound();
-          
+
         }
-         
+
     }
 }

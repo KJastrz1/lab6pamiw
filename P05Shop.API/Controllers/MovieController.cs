@@ -22,7 +22,7 @@ namespace P05Shop.API.Controllers
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<List<Movie>>>> GetMovies()
         {
-            _logger.Log(LogLevel.Information, "Invoked GetMovies Method in controller");
+            _logger.Log(LogLevel.Critical, "Invoked GetMovies Method in controller");
 
             var result = await _MovieService.GetMoviesAsync();
 

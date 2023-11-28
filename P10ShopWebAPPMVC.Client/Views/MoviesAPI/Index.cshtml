@@ -1,5 +1,5 @@
-@using P06Shop.Shared.Shop;
-@model IEnumerable<Product>
+@using P06Shop.Shared.MovieModel;
+@model IEnumerable<Movie>
 
 @{
     ViewData["Title"] = "Index";
@@ -17,18 +17,9 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model.Director)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Barcode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReleaseDate)
-            </th>
-            <th></th>
+        
         </tr>
     </thead>
     <tbody>
@@ -38,17 +29,9 @@
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
+                @Html.DisplayFor(modelItem => item.Director)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Barcode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReleaseDate)
-            </td>
+  
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

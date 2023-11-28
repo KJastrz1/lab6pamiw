@@ -1,5 +1,4 @@
-﻿using P04WeatherForecastAPI.Client.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,14 +15,19 @@ using System.Windows.Shapes;
 namespace P04WeatherForecastAPI.Client
 {
     /// <summary>
-    /// Interaction logic for ShopProductsWindow.xaml
+    /// Interaction logic for MovieDetailsView.xaml
     /// </summary>
-    public partial class ShopProductsView : Window
+    public partial class MovieDetailsView : Window
     {
-        public ShopProductsView(ProductsViewModel productsViewModel)
+        public MovieDetailsView()
         {
-            DataContext = productsViewModel;
             InitializeComponent();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+            this.Hide();
         }
     }
 }

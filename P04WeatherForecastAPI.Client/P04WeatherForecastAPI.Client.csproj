@@ -10,10 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Images\rain.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
     <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.29.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
@@ -44,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Images\rain.jpg" />
+    <Resource Include="Images\placeholder.png" />
   </ItemGroup>
 
 </Project>
