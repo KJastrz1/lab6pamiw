@@ -131,16 +131,6 @@ namespace P04WeatherForecastAPI.Client.ViewModels
             //OnPropertyChanged("SelectedMovie");
             SelectedMovie = new Movie(); 
         }
-
-        [RelayCommand]
-        public async Task RecognizeVoice()
-        {
-            string recognizedText = await _speechService.RecognizeAsync();
-
-            SelectedMovie.Director = recognizedText;
-
-            //SelectedMovie = new Movie() { DescriptionTest = "Test" };
-        }
-
+      
     }
 }

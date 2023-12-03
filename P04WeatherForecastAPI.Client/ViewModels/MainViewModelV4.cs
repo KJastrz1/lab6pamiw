@@ -18,9 +18,8 @@ namespace P04WeatherForecastAPI.Client.ViewModels
     // przekazywanie wartosci do innego formularza 
     public partial class MainViewModelV4 : ObservableObject
     {
-
-
-
+        [ObservableProperty]
+        private string message = "";
         private readonly IServiceProvider _serviceProvider;
 
         public MainViewModelV4(IServiceProvider serviceProvider)
@@ -28,13 +27,33 @@ namespace P04WeatherForecastAPI.Client.ViewModels
             _serviceProvider = serviceProvider;
         }
 
+      
+
         [RelayCommand]
         public void OpenMoviesWindow()
         {
-            MoviesView moviesView = _serviceProvider.GetService<MoviesView>();
-            MoviesViewModel moviesViewModel = _serviceProvider.GetService<MoviesViewModel>();
-            moviesView.Show();
-            moviesViewModel.GetMovies();
+            if (!string.IsNullOrEmpty(LoginViewModel.Token))
+            {
+                MoviesView moviesView = _serviceProvider.GetService<MoviesView>();
+                MoviesViewModel moviesViewModel = _serviceProvider.GetService<MoviesViewModel>();
+                moviesView.Show();
+                moviesViewModel.GetMovies();
+            }
+            else
+            {
+                Message = "You need to login first!";
+            }
+        }
+
+        [RelayCommand]
+        public void OpenLoginWindow()
+        {
+            LoginView loginView = _serviceProvider.GetService<LoginView>();
+            LoginViewModel loginViewModel = _serviceProvider.GetService<LoginViewModel>();
+            loginView.Show();
         }
     }
+
+
 }
+

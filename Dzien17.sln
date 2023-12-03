@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "P09ShopWebAPPMVC.Client", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "P10ShopWebAPPMVC.Client", "P10ShopWebAPPMVC.Client\P10ShopWebAPPMVC.Client.csproj", "{1589BC26-7D25-42B7-BD05-0EBE49AAA3E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P11BlazorWebAssembly.Client", "P11BlazorWebAssembly.Client\P11BlazorWebAssembly.Client.csproj", "{F3A5449F-782E-4F3D-9006-8AFD3318C620}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "P11BlazorWebAssembly.Client", "P11BlazorWebAssembly.Client\P11BlazorWebAssembly.Client.csproj", "{F3A5449F-782E-4F3D-9006-8AFD3318C620}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A51FB08E-2759-418B-9EB9-02E24D9DE25D}"
 	ProjectSection(SolutionItems) = preProject

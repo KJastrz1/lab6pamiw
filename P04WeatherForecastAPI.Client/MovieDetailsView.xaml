@@ -27,8 +27,7 @@
 
             <TextBlock Text="Description:" Grid.Row="1" Grid.Column="0"/>
 
-            <DockPanel Grid.Row="1" Grid.Column="1" >
-                <Button Command="{Binding DataContext.RecognizeVoiceCommand, RelativeSource={RelativeSource AncestorType={x:Type local:MovieDetailsView}}}" DockPanel.Dock="Right" Content="Speak"></Button>
+            <DockPanel Grid.Row="1" Grid.Column="1" >                
                 <TextBox DockPanel.Dock="Right" Text="{Binding Description}" />
             </DockPanel>
             

@@ -18,7 +18,7 @@ var appSettingsSection = appSettings.Get<AppSettings>();
 
 var uriBuilder = new UriBuilder(appSettingsSection.BaseAPIUrl);
 builder.Services.AddHttpClient<IMovieService, MovieService>(client => client.BaseAddress = uriBuilder.Uri);
-builder.Services.Configure<AppSettings>(appSettings);
+builder.Services.AddSingleton(appSettingsSection);
 
 // Configure logging
 builder.Logging.AddConsole(); // Add console logger

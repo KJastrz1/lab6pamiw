@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using P06Shop.Shared.MovieModel;
 using P07Shop.DataSeeder;
-
+using P06Shop.Shared.Auth;
 namespace P05Shop.API.Models
 {
     public class DataContext : DbContext
@@ -13,7 +13,8 @@ namespace P05Shop.API.Models
         }
 
         public DbSet<Movie> Movies { get; set; }
-  
+
+        public DbSet<User> Users { get; set; }  
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

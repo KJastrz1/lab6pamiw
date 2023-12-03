@@ -1,0 +1,76 @@
+﻿@page "/Register"
+@using P06Shop.Shared.Auth;
+@using P06Shop.Shared.Services.AuthService;
+
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
+<h3>Register</h3>
+
+
+<EditForm Model="userRegisterDTO" OnValidSubmit="HandleRegistration" class="form-group">
+
+    <p>Email:</p>
+    <InputText class="input-group" @bind-Value="userRegisterDTO.Email" id="email"></InputText>
+    <p>User name:</p>
+    <InputText class="input-group" @bind-Value="userRegisterDTO.Username" id="username"></InputText>
+    <p>Password:</p>
+    <InputText  type="password" class="input-group" @bind-Value="userRegisterDTO.Password" id="password"></InputText>
+    <p>Confirm Password:</p>
+    <InputText  type="password" class="input-group" @bind-Value="userRegisterDTO.ConfirmPassword" id="confirmPassword"></InputText>
+
+    <button type="submit">Register</button>
+</EditForm>
+
+<p>@message</p>
+
+
+@code {
+    UserRegisterDTO userRegisterDTO = new UserRegisterDTO();
+
+    string message = string.Empty;
+
+
+
+    async Task HandleRegistration()
+
+    {
+
+        var result = await AuthService.Register(userRegisterDTO);
+
+        if (result.Success)
+
+        {
+
+            NavigationManager.NavigateTo("Login");
+
+        }
+
+        else
+
+        {
+
+            message = result.Message;
+
+        }
+
+    }
+
+}
+
+<style>
+    p {
+        margin-bottom: 0;
+    }
+
+    .input-group {
+        margin-bottom: 10px;
+
+    }
+
+    .form-group {
+        width: 100%;
+        max-width: 200px;
+        min-width: 100px;
+    }
+</style>

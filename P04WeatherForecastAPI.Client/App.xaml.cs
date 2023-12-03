@@ -6,6 +6,7 @@ using P04WeatherForecastAPI.Client.ViewModels;
 using P06Shop.Shared.Configuration;
 using P06Shop.Shared.MessageBox;
 using P06Shop.Shared.Services.MovieService;
+using P06Shop.Shared.Services.AuthService;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -14,6 +15,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System;
+using System.Windows;
+using Serilog;
+using Microsoft.Extensions.Options;
 
 namespace P04WeatherForecastAPI.Client
 {
@@ -31,12 +36,14 @@ namespace P04WeatherForecastAPI.Client
             var builder = new ConfigurationBuilder()
             .AddUserSecrets<App>()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json")
-            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable
-            ("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true);
+            .AddJsonFile("appsettings.json");          
             _configuration = builder.Build();
             // pamietac o lunch profiles w visual studio! 
 
+            Log.Logger = new LoggerConfiguration()
+           .WriteTo.Console().WriteTo
+           .File("log.txt")
+           .CreateLogger();
 
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
@@ -59,7 +66,7 @@ namespace P04WeatherForecastAPI.Client
             //Microsoft.Extensions.Options.ConfigurationExtensions
             var appSettings = _configuration.GetSection(nameof(AppSettings));
             var appSettingsSection = appSettings.Get<AppSettings>();
-
+          
             // services.Configure<AppSettings>(appSettings);
             services.AddSingleton(appSettingsSection);
             return appSettingsSection;
@@ -80,6 +87,7 @@ namespace P04WeatherForecastAPI.Client
             // konfiguracja viewModeli 
             services.AddSingleton<MainViewModelV4>();
             services.AddSingleton<MoviesViewModel>();
+            services.AddSingleton<LoginViewModel>();
 
         }
 
@@ -89,17 +97,16 @@ namespace P04WeatherForecastAPI.Client
             services.AddTransient<MainWindow>();
             services.AddTransient<MovieDetailsView>();
             services.AddTransient<MoviesView>();
+            services.AddTransient<LoginView>();
         }
 
         private void ConfigureHttpClients(IServiceCollection services, AppSettings appSettingsSection)
         {
-            var uriBuilder = new UriBuilder(appSettingsSection.BaseAPIUrl)
-            {
-
-            };
-            Console.Error.WriteLine($"Base API URL: {uriBuilder.Uri}");
+            var uriBuilder = new UriBuilder(appSettingsSection.BaseAPIUrl);
+           
+            
             //Microsoft.Extensions.Http
-
+            services.AddHttpClient<IAuthService, AuthService>(client => client.BaseAddress = uriBuilder.Uri);
             services.AddHttpClient<IMovieService, MovieService>(client => client.BaseAddress = uriBuilder.Uri);
         }
 

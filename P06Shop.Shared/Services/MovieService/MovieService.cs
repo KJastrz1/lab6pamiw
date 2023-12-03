@@ -5,14 +5,20 @@ using Newtonsoft.Json;
 using P06Shop.Shared;
 using P06Shop.Shared.Configuration;
 using P06Shop.Shared.MovieModel;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+using System;
+using System.Windows;
+using Serilog;
+
 
 namespace P06Shop.Shared.Services.MovieService
 {
@@ -22,10 +28,10 @@ namespace P06Shop.Shared.Services.MovieService
         private readonly HttpClient _httpClient;
         private readonly AppSettings _appSettings;
       
-        public MovieService(HttpClient httpClient, IOptions<AppSettings> appSettings)
+        public MovieService(HttpClient httpClient, AppSettings appSettings)
         {
             _httpClient = httpClient;
-            _appSettings = appSettings.Value;
+            _appSettings = appSettings;
         }
 
         public async Task<ServiceResponse<Movie>> CreateMovieAsync(Movie Movie)
@@ -50,8 +56,10 @@ namespace P06Shop.Shared.Services.MovieService
         {
             try
             {
-               
-                var response = await _httpClient.GetAsync(_appSettings.BaseMovieEndpoint.Base_url+_appSettings.BaseMovieEndpoint.GetAllMoviesEndpoint);
+                Log.Information("invoked client service");
+                Log.Information("Base API URL: {BaseApiUrl}", _httpClient.BaseAddress);
+                Log.Information(_appSettings.BaseMovieEndpoint.Base_url + _appSettings.BaseMovieEndpoint.GetAllMoviesEndpoint);
+                 var response = await _httpClient.GetAsync(_appSettings.BaseMovieEndpoint.Base_url+_appSettings.BaseMovieEndpoint.GetAllMoviesEndpoint);
                 if (!response.IsSuccessStatusCode)
                     return new ServiceResponse<List<Movie>>
                     {

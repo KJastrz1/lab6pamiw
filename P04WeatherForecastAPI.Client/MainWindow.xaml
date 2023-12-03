@@ -31,9 +31,10 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <DockPanel Grid.Column="0" Grid.Row="0" Margin="10">            
+        <DockPanel Grid.Column="0" Grid.Row="0" Margin="10">  
+            <Button DockPanel.Dock="Top" Content="Login" Command="{Binding OpenLoginWindowCommand}" Style="{StaticResource mainButtonStyle}" ></Button>          
             <Button DockPanel.Dock="Top" Content="Open Movies" Command="{Binding OpenMoviesWindowCommand}" Style="{StaticResource mainButtonStyle}" ></Button>
-      
+            <Label Content="{Binding Message}" ></Label>
         </DockPanel>        
     
     </Grid>

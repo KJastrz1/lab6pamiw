@@ -1,8 +1,11 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
+using Microsoft.IdentityModel.Tokens;
 using P05Shop.API.Models;
+using P05Shop.API.Services.AuthService;
+using P05Shop.API.Services.MovieService;
 using P06Shop.Shared.Services.MovieService;
-
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,17 +14,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MoviesAPI", Version = "v1" });
-});
+builder.Services.AddSwaggerGen();
 
 //Microsoft.EntityFrameworkCore.SqlServer
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
 builder.Services.AddScoped<IMovieService, P05Shop.API.Services.MovieService.MovieService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 // addScoped - obiekt jest tworzony za kazdym razem dla nowego zapytania http
 // jedno zaptranie tworzy jeden obiekt 
 
@@ -29,6 +29,25 @@ builder.Services.AddScoped<IMovieService, P05Shop.API.Services.MovieService.Movi
 // nawet wielokrotnie w cyklu jedengo zaptrania 
 
 //addsingleton - nowa instancja klasy tworzona jest tylko 1 na caly cykl trwania naszej aplikacji 
+
+
+//autentykacja 
+
+string token = builder.Configuration.GetSection("AppSettings:Token").Value;
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+    {
+       // options.Authority = "https://localhost:5001";
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = false,
+            ValidateIssuer = false,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(token)),
+            ValidateIssuerSigningKey = true,
+        };
+    });
+
+
 
 
 builder.Services.AddCors(options =>
@@ -50,16 +69,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-       app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "MoviesAPI");
-    });
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 
 app.UseCors("MyCorsePolicy");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
